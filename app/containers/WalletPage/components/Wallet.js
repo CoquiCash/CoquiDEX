@@ -18,6 +18,7 @@ import FileCopyIcon from '@material-ui/icons/FileCopy';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Divider from '@material-ui/core/Divider';
+
 import { required, requiredNumber } from '../../../components/Form/helper';
 import validate from '../../../components/Form/validate';
 import { getCoinIcon } from '../../../components/CryptoIcons';
@@ -122,6 +123,14 @@ const styles = theme => ({
   },
   iconSmall: {
     fontSize: 20
+  },
+
+  withdraw__button: {
+    boxShadow: 'none'
+  },
+
+  withdraw__form: {
+    // marginBottom: 20
   }
 });
 
@@ -221,103 +230,102 @@ class Wallet extends Component<Props, State> {
     const CIcon = getCoinIcon(data.get('coin'));
 
     return (
-      <React.Fragment>
-        <Grid container spacing={0}>
-          <Grid item xs={12} className={classes.containerSection}>
-            <ExpansionPanel expanded={expanded}>
-              <ExpansionPanelSummary
-                classes={{
-                  expandIcon: classes.rightIcon
-                }}
-                expandIcon={
-                  <ExpandMoreIcon onClick={this.toggleExpansionPanel} />
-                }
-              >
-                <div className={classes.bitcoinContainer}>
-                  <div className={classes.bitcoinTitle}>
-                    <div className={classes.rightLogo}>
-                      {CIcon}
-                      <div className={classes.coinName}>{data.get('coin')}</div>
-                    </div>
-                    <div>
-                      {data.get('balance')} {data.get('coin')}
-                    </div>
+      <Grid container spacing={0}>
+        <Grid item xs={12} className={classes.containerSection}>
+          <ExpansionPanel expanded={expanded}>
+            <ExpansionPanelSummary
+              classes={{
+                expandIcon: classes.rightIcon
+              }}
+              expandIcon={
+                <ExpandMoreIcon onClick={this.toggleExpansionPanel} />
+              }
+            >
+              <div className={classes.bitcoinContainer}>
+                <div className={classes.bitcoinTitle}>
+                  <div className={classes.rightLogo}>
+                    {CIcon}
+                    <div className={classes.coinName}>{data.get('coin')}</div>
                   </div>
-                  <div className={classes.bitcoinQRCodeContainer}>
-                    <div className={classes.bitcoinQRCodeItem}>
-                      <Typography variant="subheading" gutterBottom>
-                        Your deposit address
-                      </Typography>
-                      <Typography variant="title" gutterBottom>
-                        {data.get('address')}
-                      </Typography>
-                      <Button
-                        size="small"
-                        color="primary"
-                        onClick={this.copyAddressToClipboard}
-                      >
-                        <FileCopyIcon
-                          className={classNames(
-                            classes.leftIcon,
-                            classes.iconSmall
-                          )}
-                        />
-                        Copy to keyboard
-                      </Button>
-                    </div>
-                    <QRCode value={data.get('address')} />
+                  <div>
+                    {data.get('balance')} {data.get('coin')}
                   </div>
                 </div>
-              </ExpansionPanelSummary>
-              <ExpansionPanelDetails className={classes.details}>
-                <Divider className={classes.hr} />
+                <div className={classes.bitcoinQRCodeContainer}>
+                  <div className={classes.bitcoinQRCodeItem}>
+                    <Typography variant="subheading" gutterBottom>
+                      Your deposit address
+                    </Typography>
+                    <Typography variant="title" gutterBottom>
+                      {data.get('address')}
+                    </Typography>
+                    <Button
+                      size="small"
+                      color="primary"
+                      onClick={this.copyAddressToClipboard}
+                    >
+                      <FileCopyIcon
+                        className={classNames(
+                          classes.leftIcon,
+                          classes.iconSmall
+                        )}
+                      />
+                      Copy to keyboard
+                    </Button>
+                  </div>
+                  <QRCode value={data.get('address')} />
+                </div>
+              </div>
+            </ExpansionPanelSummary>
+            <ExpansionPanelDetails className={classes.details}>
+              <Divider className={classes.hr} />
 
-                {loading && <LinearProgress className={classes.hr} />}
+              {loading && <LinearProgress className={classes.hr} />}
 
-                <Typography variant="button" gutterBottom>
-                  Withdraw {data.get('coin')}
-                </Typography>
-                <Typography variant="body1" gutterBottom>
-                  Available: {data.get('balance')} {data.get('coin')}
-                </Typography>
-                <form>
-                  <ValidationAmountInput
-                    id="amount"
-                    label="Amount to withdraw"
-                    margin="normal"
-                    balance={data.get('balance')}
-                    className={classes.formItem}
-                    ref={this.amountInput}
-                    disabled={loading}
-                  />
+              <Typography variant="button" gutterBottom>
+                Withdraw {data.get('coin')}
+              </Typography>
+              <Typography variant="body1" gutterBottom>
+                Available: {data.get('balance')} {data.get('coin')}
+              </Typography>
+              <form className={classes.withdraw__form}>
+                <ValidationAmountInput
+                  id="amount"
+                  label="Amount to withdraw"
+                  margin="normal"
+                  balance={data.get('balance')}
+                  className={classes.formItem}
+                  ref={this.amountInput}
+                  disabled={loading}
+                />
 
-                  <ValidationAddressInput
-                    id="address"
-                    label="Withdraw to address"
-                    margin="normal"
-                    className={classes.formItem}
-                    address={data.get('address')}
-                    ref={this.addressInput}
-                    disabled={loading}
-                  />
+                <ValidationAddressInput
+                  id="address"
+                  label="Withdraw to address"
+                  margin="normal"
+                  className={classes.formItem}
+                  address={data.get('address')}
+                  ref={this.addressInput}
+                  disabled={loading}
+                />
 
-                  <br />
+                <br />
 
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    className={classes.button}
-                    onClick={this.handleWithdraw}
-                    disabled={loading}
-                  >
-                    Withdraw
-                  </Button>
-                </form>
-              </ExpansionPanelDetails>
-            </ExpansionPanel>
-          </Grid>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  className={classes.withdraw__button}
+                  onClick={this.handleWithdraw}
+                  disabled={loading}
+                >
+                  Withdraw
+                </Button>
+              </form>
+              {/* <Divider className={classes.hr} /> */}
+            </ExpansionPanelDetails>
+          </ExpansionPanel>
         </Grid>
-      </React.Fragment>
+      </Grid>
     );
   }
 }
