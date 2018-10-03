@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
+import { FormattedMessage } from 'react-intl';
 import type { Dispatch } from 'redux';
 import { withRouter } from 'react-router';
 import type { Location } from 'react-router';
@@ -75,9 +76,9 @@ const styles = theme => ({
 
   drawer__iconSelected: {
     '& svg': {
-      fill: '#4285f4'
+      fill: theme.palette.primary.light
     },
-    color: '#4285f4'
+    color: theme.palette.primary.light
   },
 
   drawer__text: {
@@ -189,7 +190,11 @@ class DICDrawer extends Component<Props, State> {
             <ListItemIcon>
               <AccountBalanceWalletIcon />
             </ListItemIcon>
-            <span className={classes.drawer__text}>Wallet</span>
+            <span className={classes.drawer__text}>
+              <FormattedMessage id="dicoapp.containers.Drawer.wallet">
+                {(...content) => content}
+              </FormattedMessage>
+            </span>
           </ListItem>
           <ListItem
             button
@@ -201,7 +206,11 @@ class DICDrawer extends Component<Props, State> {
             <ListItemIcon>
               <AddShoppingCartIcon />
             </ListItemIcon>
-            <span className={classes.drawer__text}>Buy</span>
+            <span className={classes.drawer__text}>
+              <FormattedMessage id="dicoapp.containers.Drawer.buy">
+                {(...content) => content}
+              </FormattedMessage>
+            </span>
           </ListItem>
           <ListItem
             button
@@ -213,7 +222,11 @@ class DICDrawer extends Component<Props, State> {
             <ListItemIcon>
               <LiveHelpIcon />
             </ListItemIcon>
-            <span className={classes.drawer__text}>Help</span>
+            <span className={classes.drawer__text}>
+              <FormattedMessage id="dicoapp.containers.Drawer.help">
+                {(...content) => content}
+              </FormattedMessage>
+            </span>
           </ListItem>
           <ListItem
             button

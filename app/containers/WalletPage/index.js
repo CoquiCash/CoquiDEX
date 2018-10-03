@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import classNames from 'classnames';
 import { compose } from 'redux';
+import { FormattedMessage } from 'react-intl';
 import { withStyles } from '@material-ui/core/styles';
 // import Card from '@material-ui/core/Card';
 // import CardContent from '@material-ui/core/CardContent';
@@ -56,8 +57,6 @@ class WalletPage extends Component<Props> {
 
     return (
       <React.Fragment>
-        <MDCAppBar title="Wallet" />
-
         <Grid
           container
           spacing={0}
@@ -65,7 +64,9 @@ class WalletPage extends Component<Props> {
         >
           <Grid item xs={12} className={classes.containerSection}>
             <Typography variant="title" gutterBottom>
-              Overview
+              <FormattedMessage id="dicoapp.containers.Wallet.overview">
+                {(...content) => content}
+              </FormattedMessage>
             </Typography>
           </Grid>
           <Overview />
@@ -88,6 +89,13 @@ const WalletPageWapper = compose(
 const Index = () => (
   <NavigationLayout background="#eeeeee">
     <ErrorBoundary>
+      <MDCAppBar
+        title={
+          <FormattedMessage id="dicoapp.containers.Wallet.title">
+            {(...content) => content}
+          </FormattedMessage>
+        }
+      />
       <WalletPageWapper />
     </ErrorBoundary>
   </NavigationLayout>

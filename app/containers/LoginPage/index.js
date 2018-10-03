@@ -5,16 +5,20 @@ import classNames from 'classnames';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { createStructuredSelector } from 'reselect';
+import { FormattedMessage, injectIntl } from 'react-intl';
+import type { IntlShape } from 'react-intl';
 import { withStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Typography from '@material-ui/core/Typography';
-import Avatar from '@material-ui/core/Avatar';
+// import Avatar from '@material-ui/core/Avatar';
 import swal from 'sweetalert';
+import getConfig from '../../utils/config';
 import injectReducer from '../../utils/inject-reducer';
 import injectSaga from '../../utils/inject-saga';
+import CryptoIcons, { UNKNOW } from '../../components/CryptoIcons';
 import ErrorBoundary from '../../components/ErrorBoundary';
 import routes from '../../constants/routes.json';
 import { EmptyLayout } from '../Layout';
@@ -28,7 +32,10 @@ import {
   makeSelectError
 } from '../App/selectors';
 import { APP_STATE_NAME } from './constants';
-import image from './components/logo.png';
+
+// import image from './components/logo.png';
+const config = getConfig();
+const COIN_BASE = config.get('marketmaker.tokenconfig');
 
 // const styles = theme => ({
 const styles = () => ({
@@ -62,7 +69,8 @@ const styles = () => ({
     margin: '14px auto 0px',
     position: 'relative',
     height: 85,
-    width: 85
+    width: 85,
+    display: 'flex'
   },
 
   loginContainer__content: {
@@ -78,8 +86,7 @@ const styles = () => ({
   loginContainer__loginButton: {
     boxShadow: 'none',
     border: 0,
-    height: 36,
-    backgroundColor: '#005194'
+    height: 36
   },
 
   loginContainer__bottomButton: {
@@ -100,7 +107,8 @@ type Props = {
   // eslint-disable-next-line flowtype/no-weak-types
   error: Object | boolean,
   // eslint-disable-next-line flowtype/no-weak-types
-  dispatchLogin: Function
+  dispatchLogin: Function,
+  intl: IntlShape
 };
 
 type State = {
@@ -115,9 +123,16 @@ class LoginPage extends Component<Props, State> {
   };
 
   componentDidUpdate = prevProps => {
-    const { authenticated, error, history } = this.props;
+    const { authenticated, error, history, intl } = this.props;
     if (authenticated && !prevProps.authenticated) {
-      swal('Success', 'Welcome to the GLX dICO Wallet!', 'success');
+      swal(
+        'Success',
+        intl.formatMessage({
+          defaultMessage: 'Login Successful Message',
+          id: 'dicoapp.containers.LoginPage.login_successful_message'
+        }),
+        'success'
+      );
       history.push('/buy');
     }
     if (!authenticated && error) {
@@ -157,28 +172,34 @@ class LoginPage extends Component<Props, State> {
     debug('render');
     const { loading, classes } = this.props;
     const { passphrase } = this.state;
+    const symbol = COIN_BASE.coin;
+    let Icon = CryptoIcons[symbol];
+    if (!Icon) {
+      Icon = UNKNOW;
+    }
 
     return (
       <div className={classes.loginContainer}>
         <div className={classes.loginContainer__center}>
           <Card className={classes.loginContainer__card}>
             {loading && <LinearProgress />}
-            <Avatar
-              className={classes.loginContainer__logo}
-              alt="logo"
-              src={image}
-            />
+            <Icon className={classes.loginContainer__logo} alt="logo" />
+
             <CardContent className={classes.loginContainer__content}>
               <Typography
                 variant="headline"
                 className={classes.loginContainer__item}
                 gutterBottom
               >
-                Welcome to dICO App
+                <FormattedMessage id="dicoapp.containers.LoginPage.headline">
+                  {(...content) => content}
+                </FormattedMessage>
               </Typography>
 
               <Typography variant="subheading" gutterBottom>
-                Please type in your Seed to Login to your existing Account
+                <FormattedMessage id="dicoapp.containers.LoginPage.subheading">
+                  {(...content) => content}
+                </FormattedMessage>
               </Typography>
 
               <Passphrase
@@ -200,7 +221,9 @@ class LoginPage extends Component<Props, State> {
                   classes.loginContainer__loginButton
                 )}
               >
-                Log In
+                <FormattedMessage id="dicoapp.containers.LoginPage.submit">
+                  {(...content) => content}
+                </FormattedMessage>
               </Button>
             </CardContent>
 
@@ -209,7 +232,9 @@ class LoginPage extends Component<Props, State> {
               className={classes.loginContainer__bottomButton}
               onClick={this.gotoSeedPage}
             >
-              Click Here to Create a New Account
+              <FormattedMessage id="dicoapp.containers.LoginPage.new_account">
+                {(...content) => content}
+              </FormattedMessage>
             </Button>
           </Card>
         </div>
@@ -241,6 +266,7 @@ const LoginPageWapper = compose(
   withReducer,
   withSaga,
   withConnect,
+  injectIntl,
   withStyles(styles)
 )(LoginPage);
 

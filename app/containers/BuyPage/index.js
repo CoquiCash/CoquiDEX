@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import type { Dispatch } from 'redux';
+import { FormattedMessage } from 'react-intl';
 import { createStructuredSelector } from 'reselect';
 import type { List, Map } from 'immutable';
 import { withStyles } from '@material-ui/core/styles';
@@ -22,12 +23,15 @@ import { WEBSOCKET_DAEMON } from '../../utils/constants';
 import MDCAppBar from '../../components/AppBar';
 import ErrorBoundary from '../../components/ErrorBoundary';
 import { NavigationLayout } from '../Layout';
-import { makeSelectBalanceEntities } from '../App/selectors';
+import {
+  makeSelectBalanceEntities,
+  makeSelectBalanceLoading
+} from '../App/selectors';
 import { loadBalance } from '../App/actions';
 import AmountSection from './components/AmountSection';
 import CurrencySection from './components/CurrencySection';
 import PaymentSection from './components/PaymentSection';
-// import TestSwap from './components/TestSwap';
+import TestSwap from './components/TestSwap';
 import { APP_STATE_NAME } from './constants';
 import reducer from './reducer';
 import saga from './saga';
@@ -75,6 +79,7 @@ const styles = () => ({
 
 type Props = {
   loading: boolean,
+  balanceLoading: boolean,
   // eslint-disable-next-line flowtype/no-weak-types
   classes: Object,
   // eslint-disable-next-line flowtype/no-weak-types
@@ -116,9 +121,12 @@ class BuyPage extends Component<Props, State> {
   onClickPaymentCoin = (evt: SyntheticInputEvent<>) => {
     evt.preventDefault();
     const { value } = evt.target;
-    this.setState({
-      paymentCoin: value
-    });
+    const { paymentCoin } = this.state;
+    if (value !== paymentCoin) {
+      this.setState({
+        paymentCoin: value
+      });
+    }
   };
 
   render() {
@@ -127,6 +135,7 @@ class BuyPage extends Component<Props, State> {
     const {
       classes,
       loading,
+      balanceLoading,
       list,
       entities,
       balance,
@@ -136,18 +145,6 @@ class BuyPage extends Component<Props, State> {
 
     return (
       <React.Fragment>
-        <MDCAppBar title="Buy" />
-        {/* <AppBar position="fixed" color="default" className={classes.cardContent__appBar}>
-          <Toolbar>
-            <IconButton className={classes.cardContent__appBarBtn} color="inherit" aria-label="Menu">
-              <MenuIcon />
-            </IconButton>
-            <Typography variant="title" color="inherit">
-              Buy
-            </Typography>
-          </Toolbar>
-          <Divider />
-        </AppBar> */}
         <Grid container spacing={0} className={classes.container}>
           <Grid item xs={12} className={classes.containerSection}>
             {/* <Card> */}
@@ -158,7 +155,9 @@ class BuyPage extends Component<Props, State> {
                 gutterBottom
                 className={classes.cardContent__title}
               >
-                Currency
+                <FormattedMessage id="dicoapp.containers.BuyPage.currency">
+                  {(...content) => content}
+                </FormattedMessage>
               </Typography>
               {/* <Divider className={classes.hr} /> */}
 
@@ -173,7 +172,9 @@ class BuyPage extends Component<Props, State> {
                 gutterBottom
                 className={classes.cardContent__title}
               >
-                Payment Method
+                <FormattedMessage id="dicoapp.containers.BuyPage.payment">
+                  {(...content) => content}
+                </FormattedMessage>
               </Typography>
               <IconButton
                 aria-label="Reload prices"
@@ -190,6 +191,7 @@ class BuyPage extends Component<Props, State> {
                 entities={entities}
                 balance={balance}
                 dispatchLoadPrice={dispatchLoadPrice}
+                loading={balanceLoading}
               />
             </CardContent>
             <CardContent className={classes.cardContent}>
@@ -198,7 +200,9 @@ class BuyPage extends Component<Props, State> {
                 gutterBottom
                 className={classes.cardContent__title}
               >
-                Amount
+                <FormattedMessage id="dicoapp.containers.BuyPage.amount">
+                  {(...content) => content}
+                </FormattedMessage>
               </Typography>
               {/* <Divider className={classes.hr} /> */}
               <AmountSection paymentCoin={paymentCoin} />
@@ -206,7 +210,7 @@ class BuyPage extends Component<Props, State> {
             {/* </Card> */}
           </Grid>
         </Grid>
-        {/* <TestSwap /> */}
+        <TestSwap />
       </React.Fragment>
     );
   }
@@ -225,7 +229,8 @@ const mapStateToProps = createStructuredSelector({
   loading: makeSelectPricesLoading(),
   entities: makeSelectPricesEntities(),
   balance: makeSelectBalanceEntities(),
-  list: makeSelectBalanceList()
+  list: makeSelectBalanceList(),
+  balanceLoading: makeSelectBalanceLoading()
 });
 
 const withConnect = connect(
@@ -252,6 +257,13 @@ const BuyPageWapper = compose(
 const Index = () => (
   <NavigationLayout>
     <ErrorBoundary>
+      <MDCAppBar
+        title={
+          <FormattedMessage id="dicoapp.containers.BuyPage.title">
+            {(...content) => content}
+          </FormattedMessage>
+        }
+      />
       <BuyPageWapper />
     </ErrorBoundary>
   </NavigationLayout>

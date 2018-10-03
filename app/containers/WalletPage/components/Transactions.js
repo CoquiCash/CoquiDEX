@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 import type { Dispatch } from 'redux';
 import { createStructuredSelector } from 'reselect';
+import { FormattedMessage } from 'react-intl';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import LinearProgress from '@material-ui/core/LinearProgress';
@@ -151,7 +152,9 @@ class Transactions extends PureComponent<Props> {
             {loading && <LinearProgress />}
             <CardContent>
               <Typography variant="title" gutterBottom>
-                Last Transactions
+                <FormattedMessage id="dicoapp.containers.Wallet.last_transactions">
+                  {(...content) => content}
+                </FormattedMessage>
               </Typography>
               <div className={classes.btns}>
                 <IconButton
@@ -172,9 +175,21 @@ class Transactions extends PureComponent<Props> {
                 <TableHead>
                   <TableRow>
                     <TableCell className={classes.th}>#</TableCell>
-                    <TableCell className={classes.th}>Coin</TableCell>
-                    <TableCell className={classes.th}>Block height</TableCell>
-                    <TableCell className={classes.th}>Transaction id</TableCell>
+                    <TableCell className={classes.th}>
+                      <FormattedMessage id="dicoapp.containers.Wallet.last_transactions_coin">
+                        {(...content) => content}
+                      </FormattedMessage>
+                    </TableCell>
+                    <TableCell className={classes.th}>
+                      <FormattedMessage id="dicoapp.containers.Wallet.last_transactions_blockheight">
+                        {(...content) => content}
+                      </FormattedMessage>
+                    </TableCell>
+                    <TableCell className={classes.th}>
+                      <FormattedMessage id="dicoapp.containers.Wallet.last_transactions_transactionid">
+                        {(...content) => content}
+                      </FormattedMessage>
+                    </TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>{list && list.map(this.renderRecord)}</TableBody>
